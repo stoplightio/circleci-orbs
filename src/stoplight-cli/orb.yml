@@ -1,0 +1,67 @@
+version: 2.1
+
+description: |
+  A set of commands and jobs for working with the Stoplight CLI.
+
+examples:
+  stoplight-analyze-workflow-example:
+    description: "Checkout, install Stoplight CLI, and analyze the repo."
+
+    usage:
+      version: 2.1
+
+      orbs:
+        stoplight: stoplight/cli@0.0.1
+
+      workflows:
+        analyze-cli-example:
+          jobs:
+            - stoplight/analyze:
+                token: SL_ANALYZE_TOKEN
+                api-host: SL_API_HOST
+                filters:
+                  branches:
+                    only:
+                      - master
+
+executors:
+  node-10-stretch:
+    docker:
+      - image: circleci/node:10-stretch
+
+commands:
+  install:
+    steps:
+      - run:
+          name: Install the Stoplight CLI
+          command: |
+            if [[ $(command -v stoplight) == "" ]]; then
+              sudo yarn global add @stoplight/cli
+            else
+              echo "Stoplight CLI is already installed. No operation was performed."
+            fi
+
+  analyze:
+    parameters:
+      token:
+        type: env_var_name
+        default: SL_ANALYZE_TOKEN
+      api-host:
+        type: env_var_name
+        default: SL_API_HOST
+    steps:
+      - run:
+          name: Analyze the repo for OpenAPI, Models and Articles
+          command: |
+            stoplight analyze --token ${<< parameters.token >>} --api-host ${<< parameters.api-host >>}
+
+jobs:
+  analyze:
+    executor: node-10-stretch
+    steps:
+      - checkout
+      - run: yarn
+      - install
+      - analyze:
+          token: SL_ANALYZE_TOKEN
+          api-host: SL_API_HOST
