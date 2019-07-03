@@ -1,0 +1,68 @@
+version: 2.1
+
+description: |
+  A set of commonly used build commands for internal use.
+
+examples:
+  stoplight-build-commands-example:
+    description: "Checkout, set .npmrc, and clone down build scripts."
+
+    usage:
+      version: 2.1
+
+      orbs:
+        stoplight: stoplight/build-commands@0.0.1
+
+      jobs:
+        build:
+          docker:
+            - image: circleci/node:10-stretch
+          steps:
+            - checkout
+            - setup_remote_docker:
+                docker_layer_caching: true
+            - stoplight/clone_build_scripts
+            - stoplight/set_npm_token
+
+commands:
+  set_npm_token:
+    parameters:
+      token:
+        type: env_var_name
+        default: NPM_TOKEN
+    description: "Update .npmrc with authToken"
+    steps:
+      - run:
+          name: set npmrc
+          command: |
+            cat \<<EOF>.npmrc
+            @stoplight:registry=https://registry.npmjs.org/
+            //registry.npmjs.org/:_authToken=${<< parameters.token >>}
+            EOF
+            
+  clone_build_scripts:
+    parameters:
+      token:
+        type: env_var_name
+        default: BOT_ACCESS_TOKEN
+    description: "Clone build scripts from https://github.com/stoplightio/infrastructure/tree/master/scripts/circleci"
+    steps:
+      - run:
+          name: clone build scripts
+          command: |
+            GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's/\//\./g')" || master
+            mkdir -p /tmp
+            cd /tmp
+            git clone https://stoplight-bot:$BOT_ACCESS_TOKEN@github.com/stoplightio/infrastructure.git
+            cd infrastructure
+            git checkout $GIT_BRANCH || : # if there is a matching branch, use it, otherwise use master
+
+      - run:
+          name: clone fe-auto
+          command: |
+            GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's/\//\./g')" || master
+            mkdir -p /tmp
+            cd /tmp
+            git clone https://stoplight-bot:$BOT_ACCESS_TOKEN@github.com/stoplightio/fe-auto.git
+            cd fe-auto
+
