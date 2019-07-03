@@ -22,7 +22,7 @@ examples:
             - setup_remote_docker:
                 docker_layer_caching: true
             - stoplight/clone_build_scripts
-            - build-commands/set_npm_token
+            - stoplight/set_npm_token
 
 commands:
   set_npm_token:
