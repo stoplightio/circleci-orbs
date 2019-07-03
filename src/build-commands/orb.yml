@@ -21,7 +21,7 @@ examples:
             - checkout
             - setup_remote_docker:
                 docker_layer_caching: true
-            - build-commands/clone_build_scripts
+            - stoplight/clone_build_scripts
             - build-commands/set_npm_token
 
 commands:
