@@ -1,6 +1,8 @@
 # Stoplight CircleCI Orbs
 
-For more information on orbs, check out https://circleci.com/docs/2.0/orb-intro/
+A monorepo of CircleCI orbs built and used by the Stoplight team.
+
+For more information on orbs, check out https://circleci.com/docs/2.0/orb-intro/.
 
 ## Orbs
 
@@ -47,3 +49,8 @@ jobs:
       - stoplight/clone_build_scripts
       - stoplight/set_npm_token
 ```
+
+## Contributing
+
+- See CircleCI's [Creating Orbs](https://circleci.com/docs/2.0/creating-orbs/) documentation to get started.
+- Add your orb to `src/{orbname}/orb.yml`.
