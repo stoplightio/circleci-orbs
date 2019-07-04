@@ -4,7 +4,7 @@ For more information on orbs, check out https://circleci.com/docs/2.0/orb-intro/
 
 ## Orbs
 
-### stoplight/cli
+### stoplight/cli [![CircleCI Orb Version](https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/stoplight/cli)](https://circleci.com/orbs/registry/orb/stoplight/cli)
 
 Add the following environment variables to your CircleCI project settings:
 
@@ -15,7 +15,7 @@ Add the following environment variables to your CircleCI project settings:
 version: 2.1
 
 orbs:
-  stoplight: stoplight/cli@0.0.1
+  stoplight: stoplight/cli@0.0.x
 
 workflows:
   stoplight-analyze:
@@ -23,7 +23,7 @@ workflows:
       - stoplight/analyze
 ```
 
-### stoplight/build-commands
+### stoplight/build-commands [![CircleCI Orb Version](https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/stoplight/build-commands)](https://circleci.com/orbs/registry/orb/stoplight/build-commands)
 
 Add the following environment variables to your CircleCI project settings:
 
@@ -34,7 +34,7 @@ Add the following environment variables to your CircleCI project settings:
 version: 2.1
 
 orbs:
-  stoplight: stoplight/build-commands@0.0.1
+  stoplight: stoplight/build-commands@0.0.x
 
 jobs:
   build:

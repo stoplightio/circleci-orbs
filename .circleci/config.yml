@@ -1,0 +1,52 @@
+version: 2.1
+
+orbs:
+  compare-url: iynere/compare-url@1.2.0
+
+executors:
+  cli:
+    docker:
+      - image: circleci/circleci-cli
+
+workflows:
+  publish-orbs:
+    jobs:
+      - validate
+      - publish:
+          context: orb-publishing
+          requires:
+            - validate
+          filters:
+            branches:
+              only: master
+
+jobs:
+  validate:
+    executor: cli
+    steps:
+      - checkout
+      - run: "echo -e \"token: placeholder\nverbose: false > ~/.circleci/cli.yml\""
+      - run: bash scripts/validate-orbs.sh
+
+  publish:
+    executor: cli
+    steps:
+      - checkout
+      - compare-url/reconstruct
+      - compare-url/use:
+          step-name: Publish modified orbs
+          custom-logic: |
+            for ORB in src/*/; do
+
+              orbname=$(basename $ORB)
+
+              if [[ $(git diff $COMMIT_RANGE --name-status | grep "$orbname") ]]; then
+
+                echo "publishing ${orbname}"
+
+                circleci orb publish increment ${ORB}/orb.yml stoplight/${orbname} patch --token $CIRCLECI_CLI_TOKEN
+              else
+                echo "${orbname} not modified; no need to publish"
+              fi
+              echo "------------------------------------------------------"
+            done
