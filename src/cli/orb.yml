@@ -60,7 +60,6 @@ jobs:
     executor: node-10-stretch
     steps:
       - checkout
-      - run: yarn
       - install
       - analyze:
           token: SL_ANALYZE_TOKEN
