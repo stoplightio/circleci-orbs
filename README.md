@@ -48,6 +48,8 @@ jobs:
           docker_layer_caching: true
       - stoplight/clone_build_scripts
       - stoplight/set_npm_token
+      - stoplight/build_docker:
+          image_base: quay.io/org/repo
 ```
 
 ## Contributing

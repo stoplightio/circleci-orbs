@@ -23,6 +23,8 @@ examples:
                 docker_layer_caching: true
             - stoplight/clone_build_scripts
             - stoplight/set_npm_token
+            - stoplight/build_docker:
+                image_base: quay.io/org/repo
 
 commands:
   set_npm_token:
@@ -65,4 +67,44 @@ commands:
             cd /tmp
             git clone https://stoplight-bot:$BOT_ACCESS_TOKEN@github.com/stoplightio/fe-auto.git
             cd fe-auto
+
+  build_docker:
+    parameters:
+      image_base:
+        type: string
+      docker_user:
+        type: string
+        default: stoplight+circleci
+      docker_pass_var:
+        type: env_var_name
+        default: DOCKER_PASSWORD
+    description: "Builds a docker image and pushes to quay."
+    steps:
+      - run:
+          name: build and push docker image
+          command: |
+            GIT_COMMIT="$(git rev-parse --short HEAD)"
+            GIT_BRANCH="$(git rev-parse --abbrev-ref HEAD | sed 's/\//\./g')"
+            IMAGE_BASE=<< parameters.image_base >>
+
+            if [ -z "$NPM_VERSION" ]; then
+              echo "npm-publish hasn't been run, so docker image will not be tagged with a semantic version (\$NPM_VERSION)"
+              NPM_VERSION=$GIT_COMMIT
+            fi
+
+            if [ -z "${<< parameters.docker_pass_var >>}" ]; then
+              echo "\$<< parameters.docker_pass_var >> must be set! Exiting..."
+              exit 1
+            fi
+
+            docker build -t $IMAGE_BASE:$GIT_COMMIT -t $IMAGE_BASE:$GIT_BRANCH -t $IMAGE_BASE:$NPM_VERSION -t $IMAGE_BASE:latest -t $IMAGE_BASE:stable .
+            docker login -u="<< parameters.docker_user >>" -p="${<< parameters.docker_pass_var >>}" quay.io
+            docker push $IMAGE_BASE:$GIT_COMMIT
+            docker push $IMAGE_BASE:$GIT_BRANCH
+            docker push $IMAGE_BASE:$NPM_VERSION
+
+            if [ "$GIT_BRANCH" == "master" ]; then
+              docker push $IMAGE_BASE:latest
+              docker push $IMAGE_BASE:stable
+            fi
 
