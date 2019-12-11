@@ -43,6 +43,7 @@ commands:
             cat \<<EOF>.npmrc
             @stoplight:registry=https://registry.npmjs.org/
             //registry.npmjs.org/:_authToken=${<< parameters.token >>}
+            @fortawesome:registry=https://npm.fontawesome.com/
             //npm.fontawesome.com/:_authToken=${<< parameters.fontawesome_token >>}
             EOF
             
