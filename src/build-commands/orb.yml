@@ -11,7 +11,7 @@ examples:
       version: 2.1
 
       orbs:
-        stoplight: stoplight/build-commands@0.0.3
+        stoplight: stoplight/build-commands@0.0.4
 
       jobs:
         build:
@@ -43,6 +43,7 @@ commands:
             cat \<<EOF>.npmrc
             @stoplight:registry=https://registry.npmjs.org/
             //registry.npmjs.org/:_authToken=${<< parameters.token >>}
+            @fortawesome:registry=https://npm.fontawesome.com/
             //npm.fontawesome.com/:_authToken=${<< parameters.fontawesome_token >>}
             EOF
             
