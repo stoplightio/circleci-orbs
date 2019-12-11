@@ -11,7 +11,7 @@ examples:
       version: 2.1
 
       orbs:
-        stoplight: stoplight/build-commands@0.0.1
+        stoplight: stoplight/build-commands@0.0.3
 
       jobs:
         build:
@@ -32,6 +32,9 @@ commands:
       token:
         type: env_var_name
         default: NPM_TOKEN
+      fontawesome_token: 
+        type: env_var_name
+        default: NPM_TOKEN_FONTAWESOME
     description: "Update .npmrc with authToken"
     steps:
       - run:
@@ -40,6 +43,7 @@ commands:
             cat \<<EOF>.npmrc
             @stoplight:registry=https://registry.npmjs.org/
             //registry.npmjs.org/:_authToken=${<< parameters.token >>}
+            //npm.fontawesome.com/:_authToken=${<< parameters.fontawesome_token >>}
             EOF
             
   clone_build_scripts:
