@@ -25,7 +25,7 @@ examples:
                       - master
 
 executors:
-  node-10-stretch:
+  node-12-stretch:
     docker:
       - image: circleci/node:12-stretch
 
