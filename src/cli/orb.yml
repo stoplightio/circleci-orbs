@@ -11,7 +11,7 @@ examples:
       version: 2.1
 
       orbs:
-        stoplight: stoplight/cli@0.0.1
+        stoplight: stoplight/cli@0.0.2
 
       workflows:
         analyze-cli-example:
@@ -25,9 +25,9 @@ examples:
                       - master
 
 executors:
-  node-10-stretch:
+  node-12-stretch:
     docker:
-      - image: circleci/node:10-stretch
+      - image: circleci/node:12-stretch
 
 commands:
   install:
@@ -57,7 +57,7 @@ commands:
 
 jobs:
   analyze:
-    executor: node-10-stretch
+    executor: node-12-stretch
     steps:
       - checkout
       - install
